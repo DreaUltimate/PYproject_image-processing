@@ -1,17 +1,13 @@
-import cv2
+#importing the necessary libraries
 import numpy as np
+import cv2
 
-# Read the image
-img = cv2.imread('image.jpg')
+cap = cv2.VideoCapture(0) 
+ret, frame = cap.read()  
+gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
+blur = cv2.GaussianBlur(gray_image, (5, 5), 0) 
+canny = cv2.Canny(blur, 10, 70) 
+contours, _ = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) 
+cv2.drawContours(frame, contours, -1, (0, 255, 0), 2) 
 
-# Convert to grayscale 
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) 
-  
-# Apply Gaussian Blur 
-blur = cv2.GaussianBlur(gray,(5,5),0) 
-  
-# Apply Canny Edge Detection 
-canny = cv2.Canny(blur,50,150) 
-
- # Dilate the edges to make them thicker 
-dilated = cv2.dilate(canny, np.ones((3,3), np.uint8))
+cv2.imshow('Contours', frame)
